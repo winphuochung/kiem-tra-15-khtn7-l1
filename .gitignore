@@ -13,3 +13,7 @@ mcp_config.json
 
 # Reference screenshots
 Screenshot*.png
+
+# Vercel
+.vercel
+
