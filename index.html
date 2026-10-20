@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiểm tra 15 phút - KHTN 7 (Bài 2, 3, 4, 5, 6)</title>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --accent: #0ea5e9;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --success: #16a34a;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #1e293b;
+      --muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 40px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand img {
+      height: 44px;
+      width: 44px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: white;
+      padding: 2px;
+    }
+
+    .brand h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .brand p {
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .status-bar {
+      display: none;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .timer-box {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .timer-box.urgent {
+      background: var(--danger);
+      animation: pulse 1s infinite;
+    }
+
+    .violation-badge {
+      background: rgba(220, 38, 38, 0.9);
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .container {
+      max-width: 820px;
+      margin: 28px auto;
+      padding: 0 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+      margin-bottom: 20px;
+    }
+
+    .card h2 {
+      color: var(--primary);
+      margin-bottom: 12px;
+      font-size: 1.35rem;
+    }
+
+    .rules-list {
+      background: #eff6ff;
+      border-left: 4px solid var(--primary-light);
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 16px 0 24px;
+      font-size: 0.95rem;
+    }
+
+    .rules-list li {
+      margin-left: 18px;
+      margin-bottom: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .btn {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      width: 100%;
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+    }
+
+    #quiz-screen, #result-screen {
+      display: none;
+    }
+
+    .question-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .q-number {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1rem;
+    }
+
+    .q-level {
+      font-size: 0.78rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .level-easy {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .level-hard {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .q-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .options-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .option-label:hover {
+      background: #f8fafc;
+      border-color: #93c5fd;
+    }
+
+    .option-label input[type="radio"] {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .score-circle {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: #eff6ff;
+      border: 5px solid var(--primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+    }
+
+    .score-circle .score-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .toast-warning {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--danger);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(220, 38, 38, 0.35);
+      display: none;
+      z-index: 999;
+      font-weight: 600;
+      max-width: 360px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <img src="logo.png" alt="Logo" onerror="this.style.display='none'" />
+      <div>
+        <h1>KIỂM TRA 15 PHÚT - KHOA HỌC TỰ NHIÊN 7</h1>
+        <p>Chủ đề: Nguyên tử, Bảng tuần hoàn &amp; Phân tử - Liên kết hóa học (Bài 2, 3, 4, 5, 6)</p>
+      </div>
+    </div>
+    <div class="status-bar" id="status-bar">
+      <div class="violation-badge" id="violation-display">Vi phạm: 0/3</div>
+      <div class="timer-box" id="timer-display">15:00</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- MÀN HÌNH ĐĂNG NHẬP -->
+    <div class="card" id="login-screen">
+      <h2>Thông tin Học sinh</h2>
+      <div class="rules-list">
+        <strong>Quy định phòng thi trực tuyến:</strong>
+        <ul>
+          <li>Đề kiểm tra gồm <strong>10 câu trắc nghiệm</strong> (8 câu Nhận biết/Thông hiểu, 2 câu Vận dụng) được trộn ngẫu nhiên cho từng học sinh.</li>
+          <li>Thời gian làm bài: <strong>15 phút</strong>. Hết giờ hệ thống tự động thu bài.</li>
+          <li><strong>Chống gian lận:</strong> Không sao chép, không mở chuột phải. Nếu chuyển tab hoặc thoát màn hình <strong>quá 3 lần</strong>, bài thi sẽ tự động nộp ngay lập tức.</li>
+        </ul>
+      </div>
+
+      <div class="form-group">
+        <label for="student-name">Họ và tên học sinh (*)</label>
+        <input type="text" id="student-name" placeholder="Ví dụ: Nguyễn Văn An" required />
+      </div>
+
+      <div class="form-group">
+        <label for="student-class">Lớp (*)</label>
+        <input type="text" id="student-class" placeholder="Ví dụ: 7A1" required />
+      </div>
+
+      <button class="btn" onclick="startQuiz()">BẮT ĐẦU LÀM BÀI</button>
+    </div>
+
+    <!-- MÀN HÌNH LÀM BÀI -->
+    <div id="quiz-screen">
+      <div class="card" style="padding: 16px 24px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+          Học sinh: <strong id="display-name"></strong> | Lớp: <strong id="display-class"></strong>
+        </div>
+        <div style="background: #eff6ff; color: var(--primary); border: 1.5px solid #93c5fd; padding: 5px 14px; border-radius: 999px; font-size: 0.95rem; font-weight: 700;">
+          Mã đề: <span id="display-exam-code">---</span>
+        </div>
+      </div>
+
+      <div id="questions-container"></div>
+
+      <button class="btn" id="submit-btn" onclick="submitQuiz(false)">NỘP BÀI KIỂM TRA</button>
+    </div>
+
+    <!-- MÀN HÌNH KẾT QUẢ -->
+    <div class="card" id="result-screen" style="text-align: center;">
+      <h2>Hoàn thành Bài kiểm tra!</h2>
+      <p id="result-student-info" style="color: var(--muted); margin-top: 4px;"></p>
+
+      <div class="score-circle">
+        <span class="score-val" id="result-score">0.0</span>
+        <span style="font-size: 0.85rem; color: var(--muted);">Thang điểm 10</span>
+      </div>
+
+      <p id="result-detail" style="font-weight: 600; margin-bottom: 10px;"></p>
+      <p id="sync-status" style="font-size: 0.95rem; color: var(--muted);"></p>
+    </div>
+  </div>
+
+  <div class="toast-warning" id="toast-warning"></div>
+
+  <script>
+    // =========================================================================
+    // CẤU HÌNH GOOGLE APPS SCRIPT WEB APP URL
+    // Thay thế chuỗi bên dưới bằng URL Web App sau khi Deploy Google Apps Script
+    // =========================================================================
+    const SCRIPT_URL = "THAY_URL_GOOGLE_APPS_SCRIPT_CUA_BAN_VAO_DAY";
+
+    // =========================================================================
+    // NGÂN HÀNG CÂU HỎI CHUẨN CHƯƠNG TRÌNH GDPT 2018 (BÀI 2, 3, 4, 5, 6 - KHTN 7)
+    // Tự động bốc ngẫu nhiên 8 câu Dễ + 2 câu Khó phủ đều các bài và đảo đáp án
+    // =========================================================================
+    const QUESTION_BANK = [
+      // --- NHÓM CÂU DỄ (NHẬN BIẾT / THÔNG HIỂU) ---
+      {
+        id: "E1",
+        level: "easy",
+        lesson: 2,
+        topic: "Bài 2: Nguyên tử",
+        question: "Hạt nhân nguyên tử được cấu tạo bởi những loại hạt nào?",
+        options: [
+          "Proton và neutron",
+          "Proton và electron",
+          "Neutron và electron",
+          "Chỉ có hạt proton"
+        ],
+        correctText: "Proton và neutron"
+      },
+      {
+        id: "E2",
+        level: "easy",
+        lesson: 2,
+        topic: "Bài 2: Nguyên tử",
+        question: "Trong nguyên tử, hạt mang điện tích âm và chuyển động xung quanh hạt nhân là:",
+        options: [
+          "Electron",
+          "Proton",
+          "Neutron",
+          "Hạt nhân"
+        ],
+        correctText: "Electron"
+      },
+      {
+        id: "E3",
+        level: "easy",
+        lesson: 2,
+        topic: "Bài 2: Nguyên tử",
+        question: "Một nguyên tử trung hòa về điện có số hạt proton là 11. Số hạt electron ở vỏ nguyên tử đó là bao nhiêu?",
+        options: ["11", "12", "22", "23"],
+        correctText: "11"
+      },
+      {
+        id: "E4",
+        level: "easy",
+        lesson: 2,
+        topic: "Bài 2: Nguyên tử",
+        question: "Đơn vị dùng để đo khối lượng nguyên tử và khối lượng phân tử được kí hiệu là gì?",
+        options: ["amu", "gam", "kg", "nm"],
+        correctText: "amu"
+      },
+      {
+        id: "E5",
+        level: "easy",
+        lesson: 3,
+        topic: "Bài 3: Nguyên tố hóa học",
+        question: "Theo danh pháp IUPAC, nguyên tố hóa học có kí hiệu Na có tên gọi là gì?",
+        options: ["Sodium", "Nitrogen", "Neon", "Natri"],
+        correctText: "Sodium"
+      },
+      {
+        id: "E6",
+        level: "easy",
+        lesson: 3,
+        topic: "Bài 3: Nguyên tố hóa học",
+        question: "Kí hiệu hóa học của nguyên tố Calcium là:",
+        options: ["Ca", "C", "Cu", "Cl"],
+        correctText: "Ca"
+      },
+      {
+        id: "E7",
+        level: "easy",
+        lesson: 3,
+        topic: "Bài 3: Nguyên tố hóa học",
+        question: "Các nguyên tử thuộc cùng một nguyên tố hóa học đều có cùng:",
+        options: [
+          "Số hạt proton trong hạt nhân",
+          "Số hạt neutron trong hạt nhân",
+          "Khối lượng nguyên tử",
+          "Số hạt trong toàn nguyên tử"
+        ],
+        correctText: "Số hạt proton trong hạt nhân"
+      },
+      {
+        id: "E8",
+        level: "easy",
+        lesson: 4,
+        topic: "Bài 4: Sơ lược bảng tuần hoàn",
+        question: "Bảng tuần hoàn các nguyên tố hóa học hiện nay gồm bao nhiêu chu kì?",
+        options: ["7 chu kì", "8 chu kì", "6 chu kì", "18 chu kì"],
+        correctText: "7 chu kì"
+      },
+      {
+        id: "E9",
+        level: "easy",
+        lesson: 4,
+        topic: "Bài 4: Sơ lược bảng tuần hoàn",
+        question: "Trong bảng tuần hoàn, các nguyên tố khí hiếm nằm ở nhóm nào?",
+        options: ["Nhóm VIIIA", "Nhóm IA", "Nhóm VIIA", "Nhóm IIA"],
+        correctText: "Nhóm VIIIA"
+      },
+      {
+        id: "E10",
+        level: "easy",
+        lesson: 4,
+        topic: "Bài 4: Sơ lược bảng tuần hoàn",
+        question: "Các nguyên tố trong cùng một chu kì của bảng tuần hoàn có cùng:",
+        options: [
+          "Số lớp electron trong nguyên tử",
+          "Số electron ở lớp ngoài cùng",
+          "Số hạt proton trong hạt nhân",
+          "Tính chất hóa học giống hệt nhau"
+        ],
+        correctText: "Số lớp electron trong nguyên tử"
+      },
+      {
+        id: "E11",
+        level: "easy",
+        lesson: 5,
+        topic: "Bài 5: Phân tử – Đơn chất – Hợp chất",
+        question: "Đơn chất là những chất được tạo nên từ:",
+        options: [
+          "Một nguyên tố hóa học",
+          "Hai nguyên tố hóa học",
+          "Từ hai nguyên tố hóa học trở lên",
+          "Các nguyên tử thuộc các nguyên tố khác nhau"
+        ],
+        correctText: "Một nguyên tố hóa học"
+      },
+      {
+        id: "E12",
+        level: "easy",
+        lesson: 5,
+        topic: "Bài 5: Phân tử – Đơn chất – Hợp chất",
+        question: "Dãy chất nào sau đây chỉ gồm toàn các hợp chất?",
+        options: [
+          "Nước (H₂O), khí carbon dioxide (CO₂), muối ăn (NaCl)",
+          "Khí oxygen (O₂), nước (H₂O), khí methane (CH₄)",
+          "Đồng (Cu), khí hiếm helium (He), khí hydrogen (H₂)",
+          "Kim cương (C), muối ăn (NaCl), đá vôi (CaCO₃)"
+        ],
+        correctText: "Nước (H₂O), khí carbon dioxide (CO₂), muối ăn (NaCl)"
+      },
+      {
+        id: "E13",
+        level: "easy",
+        lesson: 5,
+        topic: "Bài 5: Phân tử – Đơn chất – Hợp chất",
+        question: "Biết khối lượng nguyên tử của H = 1 amu, O = 16 amu. Khối lượng phân tử của nước (gồm 2 nguyên tử H và 1 nguyên tử O) là:",
+        options: ["18 amu", "17 amu", "33 amu", "16 amu"],
+        correctText: "18 amu"
+      },
+      {
+        id: "E14",
+        level: "easy",
+        lesson: 6,
+        topic: "Bài 6: Giới thiệu về liên kết hóa học",
+        question: "Ở điều kiện thường, nguyên tử của các nguyên tố khí hiếm (trừ Helium có 2 electron) đều có lớp electron ngoài cùng bền vững chứa:",
+        options: ["8 electron", "6 electron", "4 electron", "7 electron"],
+        correctText: "8 electron"
+      },
+      {
+        id: "E15",
+        level: "easy",
+        lesson: 6,
+        topic: "Bài 6: Giới thiệu về liên kết hóa học",
+        question: "Liên kết được hình thành bởi lực hút giữa các ion mang điện tích trái dấu (như trong phân tử muối ăn NaCl) được gọi là:",
+        options: [
+          "Liên kết ion",
+          "Liên kết cộng hóa trị",
+          "Liên kết kim loại",
+          "Liên kết khí hiếm"
+        ],
+        correctText: "Liên kết ion"
+      },
+      {
+        id: "E16",
+        level: "easy",
+        lesson: 6,
+        topic: "Bài 6: Giới thiệu về liên kết hóa học",
+        question: "Liên kết cộng hóa trị là liên kết được tạo nên giữa hai nguyên tử bằng:",
+        options: [
+          "Một hay nhiều cặp electron dùng chung",
+          "Sự nhường và nhận các hạt proton",
+          "Lực hút giữa ion dương và ion âm",
+          "Sự cho và nhận hoàn toàn electron"
+        ],
+        correctText: "Một hay nhiều cặp electron dùng chung"
+      },
+
+      // --- NHÓM CÂU KHÓ (VẬN DỤNG / VẬN DỤNG CAO) ---
+      {
+        id: "H1",
+        level: "hard",
+        lesson: 4,
+        topic: "Bài 4: Sơ lược bảng tuần hoàn",
+        question: "Nguyên tử của nguyên tố X thuộc chu kì 3, nhóm VIA trong bảng tuần hoàn. Phát biểu nào sau đây đúng về nguyên tử X?",
+        options: [
+          "Có 3 lớp electron, lớp ngoài cùng có 6 electron và X là phi kim",
+          "Có 6 lớp electron, lớp ngoài cùng có 3 electron và X là kim loại",
+          "Có 3 lớp electron, lớp ngoài cùng có 6 electron và X là khí hiếm",
+          "Có 3 lớp electron, lớp ngoài cùng có 3 electron và X là phi kim"
+        ],
+        correctText: "Có 3 lớp electron, lớp ngoài cùng có 6 electron và X là phi kim"
+      },
+      {
+        id: "H2",
+        level: "hard",
+        lesson: 2,
+        topic: "Bài 2 & Bài 4",
+        question: "Tổng số hạt (proton, neutron, electron) trong nguyên tử của nguyên tố Y là 40, trong đó số hạt không mang điện nhiều hơn số hạt mang điện dương là 1 hạt. Vị trí của Y trong bảng tuần hoàn là:",
+        options: [
+          "Ô 13, chu kì 3, nhóm IIIA",
+          "Ô 13, chu kì 3, nhóm IIA",
+          "Ô 14, chu kì 3, nhóm IVA",
+          "Ô 12, chu kì 3, nhóm IIA"
+        ],
+        correctText: "Ô 13, chu kì 3, nhóm IIIA"
+      },
+      {
+        id: "H3",
+        level: "hard",
+        lesson: 5,
+        topic: "Bài 5: Phân tử – Đơn chất – Hợp chất",
+        question: "Calcium carbonate (thành phần chính của đá vôi) có phân tử gồm 1 nguyên tử Calcium (Ca = 40 amu), 1 nguyên tử Carbon (C = 12 amu) và 3 nguyên tử Oxygen (O = 16 amu). Khối lượng phân tử của calcium carbonate và phân loại chất lần lượt là:",
+        options: [
+          "100 amu và là hợp chất",
+          "68 amu và là hợp chất",
+          "100 amu và là đơn chất",
+          "84 amu và là hợp chất"
+        ],
+        correctText: "100 amu và là hợp chất"
+      },
+      {
+        id: "H4",
+        level: "hard",
+        lesson: 5,
+        topic: "Bài 5: Phân tử – Đơn chất – Hợp chất",
+        question: "Phân tử của một hợp chất gồm 1 nguyên tử nguyên tố X liên kết với 4 nguyên tử Hydrogen (H = 1 amu). Biết khối lượng phân tử của hợp chất này là 16 amu. Nguyên tố X là:",
+        options: [
+          "Carbon (C = 12 amu)",
+          "Nitrogen (N = 14 amu)",
+          "Oxygen (O = 16 amu)",
+          "Sulfur (S = 32 amu)"
+        ],
+        correctText: "Carbon (C = 12 amu)"
+      },
+      {
+        id: "H5",
+        level: "hard",
+        lesson: 6,
+        topic: "Bài 6: Giới thiệu về liên kết hóa học",
+        question: "Khi hình thành liên kết ion trong phân tử magnesium oxide (MgO) từ nguyên tử Mg (có 2 electron lớp ngoài cùng) và nguyên tử O (có 6 electron lớp ngoài cùng), quá trình nào sau đây đã xảy ra?",
+        options: [
+          "Nguyên tử Mg nhường 2 electron tạo ion Mg²⁺, nguyên tử O nhận 2 electron tạo ion O²⁻",
+          "Nguyên tử Mg nhận 2 electron tạo ion Mg²⁻, nguyên tử O nhường 2 electron tạo ion O²⁺",
+          "Nguyên tử Mg và nguyên tử O góp chung 2 electron tạo thành 1 cặp electron dùng chung",
+          "Nguyên tử Mg nhường 1 electron tạo ion Mg⁺, nguyên tử O nhận 1 electron tạo ion O⁻"
+        ],
+        correctText: "Nguyên tử Mg nhường 2 electron tạo ion Mg²⁺, nguyên tử O nhận 2 electron tạo ion O²⁻"
+      },
+      {
+        id: "H6",
+        level: "hard",
+        lesson: 6,
+        topic: "Bài 6: Giới thiệu về liên kết hóa học",
+        question: "Vì sao ở điều kiện thường, muối ăn (sodium chloride) là chất rắn khó nóng chảy, khó bay hơi, còn nước đá và đường ăn dễ nóng chảy hơn?",
+        options: [
+          "Vì muối ăn là hợp chất ion có lực hút tĩnh điện mạnh, còn nước và đường ăn là chất cộng hóa trị",
+          "Vì muối ăn là chất cộng hóa trị bền, còn nước và đường ăn là hợp chất ion",
+          "Vì phân tử muối ăn nhẹ hơn phân tử nước và đường ăn",
+          "Vì muối ăn là đơn chất kim loại còn nước và đường ăn là hợp chất phi kim"
+        ],
+        correctText: "Vì muối ăn là hợp chất ion có lực hút tĩnh điện mạnh, còn nước và đường ăn là chất cộng hóa trị"
+      }
+    ];
+
+    // Trạng thái bài thi
+    let studentName = "";
+    let studentClass = "";
+    let examCode = "";
+    let selectedQuestions = [];
+    let timeRemaining = 15 * 60; // 15 phút = 900 giây
+    let timerInterval = null;
+    let violationCount = 0;
+    const MAX_VIOLATIONS = 3;
+    let isQuizActive = false;
+    let isSubmitted = false;
+
+    // Sinh mã đề cá nhân hóa duy nhất cho từng học sinh khi đăng nhập
+    function generateExamCode(className) {
+      const cleanClass = className.replace(/[^a-zA-Z0-9]/g, "").toUpperCase() || "K7";
+      const randomDigits = Math.floor(1000 + Math.random() * 9000);
+      return `MD-${cleanClass}-${randomDigits}`;
+    }
+
+    // Hàm trộn mảng ngẫu nhiên (Fisher-Yates Shuffle)
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    // Khởi tạo đề thi cá nhân hóa (8 câu dễ + 2 câu khó, phủ đều Bài 2, 3, 4, 5, 6)
+    function generatePersonalizedQuiz() {
+      const allEasy = QUESTION_BANK.filter(q => q.level === "easy");
+      const lessons = [2, 3, 4, 5, 6];
+      const guaranteedEasy = [];
+      const usedIds = new Set();
+
+      // Đảm bảo mỗi bài (Bài 2, 3, 4, 5, 6) có ít nhất 1 câu dễ trong đề
+      lessons.forEach(lessonNum => {
+        const candidates = shuffleArray(allEasy.filter(q => q.lesson === lessonNum));
+        if (candidates.length > 0) {
+          guaranteedEasy.push(candidates[0]);
+          usedIds.add(candidates[0].id);
+        }
+      });
+
+      // Lấy thêm 3 câu dễ ngẫu nhiên từ các câu còn lại để đủ 8 câu dễ
+      const remainingEasy = shuffleArray(allEasy.filter(q => !usedIds.has(q.id))).slice(0, 8 - guaranteedEasy.length);
+      const easyPool = shuffleArray([...guaranteedEasy, ...remainingEasy]);
+
+      // Lấy 2 câu khó (1 câu từ Bài 2-4, 1 câu từ Bài 5-6)
+      const hard24 = shuffleArray(QUESTION_BANK.filter(q => q.level === "hard" && q.lesson <= 4));
+      const hard56 = shuffleArray(QUESTION_BANK.filter(q => q.level === "hard" && q.lesson >= 5));
+      const hardPool = [hard24[0], hard56[0]];
+
+      const combined = shuffleArray([...easyPool, ...hardPool]);
+
+      return combined.map((q, index) => {
+        const shuffledOptions = shuffleArray(q.options);
+        return {
+          ...q,
+          displayNumber: index + 1,
+          shuffledOptions
+        };
+      });
+    }
+
+    function startQuiz() {
+      const nameInput = document.getElementById("student-name").value.trim();
+      const classInput = document.getElementById("student-class").value.trim();
+
+      if (!nameInput || !classInput) {
+        alert("Vui lòng nhập đầy đủ Họ và tên và Lớp trước khi làm bài!");
+        return;
+      }
+
+      studentName = nameInput;
+      studentClass = classInput;
+      examCode = generateExamCode(studentClass);
+      selectedQuestions = generatePersonalizedQuiz();
+
+      document.getElementById("display-name").textContent = studentName;
+      document.getElementById("display-class").textContent = studentClass;
+      document.getElementById("display-exam-code").textContent = examCode;
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("quiz-screen").style.display = "block";
+      document.getElementById("status-bar").style.display = "flex";
+
+      renderQuestions();
+      isQuizActive = true;
+      startTimer();
+    }
+
+    function renderQuestions() {
+      const container = document.getElementById("questions-container");
+      container.innerHTML = "";
+      const labels = ["A", "B", "C", "D"];
+
+      selectedQuestions.forEach((q, idx) => {
+        const card = document.createElement("div");
+        card.className = "question-card";
+
+        const levelBadge = q.level === "easy"
+          ? `<span class="q-level level-easy">Nhận biết / Thông hiểu</span>`
+          : `<span class="q-level level-hard">Vận dụng</span>`;
+
+        const optionsHTML = q.shuffledOptions.map((optText, optIdx) => `
+          <label class="option-label">
+            <input type="radio" name="question_${idx}" value="${optText.replace(/"/g, '&quot;')}" />
+            <span><strong>${labels[optIdx]}.</strong> ${optText}</span>
+          </label>
+        `).join("");
+
+        card.innerHTML = `
+          <div class="question-header">
+            <span class="q-number">Câu ${q.displayNumber} (${q.topic})</span>
+            ${levelBadge}
+          </div>
+          <div class="q-text">${q.question}</div>
+          <div class="options-list">${optionsHTML}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function startTimer() {
+      const timerEl = document.getElementById("timer-display");
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        const mins = Math.floor(timeRemaining / 60);
+        const secs = timeRemaining % 60;
+        timerEl.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+
+        if (timeRemaining <= 120) {
+          timerEl.classList.add("urgent");
+        }
+
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          showToast("Hết thời gian làm bài! Hệ thống tự động thu bài.");
+          submitQuiz(true, "Hết thời gian 15 phút");
+        }
+      }, 1000);
+    }
+
+    function submitQuiz(autoSubmit = false, reason = "Nộp bài chủ động") {
+      if (isSubmitted) return;
+
+      if (!autoSubmit) {
+        const confirmSubmit = confirm("Bạn có chắc chắn muốn nộp bài kiểm tra ngay bây giờ?");
+        if (!confirmSubmit) return;
+      }
+
+      isSubmitted = true;
+      isQuizActive = false;
+      clearInterval(timerInterval);
+
+      let correctCount = 0;
+      selectedQuestions.forEach((q, idx) => {
+        const checked = document.querySelector(`input[name="question_${idx}"]:checked`);
+        if (checked && checked.value === q.correctText) {
+          correctCount++;
+        }
+      });
+
+      const finalScore = ((correctCount / selectedQuestions.length) * 10).toFixed(1);
+
+      // Hiển thị kết quả
+      document.getElementById("quiz-screen").style.display = "none";
+      document.getElementById("status-bar").style.display = "none";
+      document.getElementById("result-screen").style.display = "block";
+
+      document.getElementById("result-student-info").textContent =
+        `Học sinh: ${studentName} - Lớp: ${studentClass} | Mã đề: ${examCode} (${reason})`;
+      document.getElementById("result-score").textContent = finalScore;
+      document.getElementById("result-detail").textContent =
+        `Số câu trả lời đúng: ${correctCount}/${selectedQuestions.length} câu | Số lần vi phạm quy chế: ${violationCount}`;
+
+      sendDataToGoogleSheet({
+        timestamp: new Date().toLocaleString("vi-VN"),
+        name: studentName,
+        className: studentClass,
+        examCode: examCode,
+        score: finalScore,
+        correctCount: `${correctCount}/${selectedQuestions.length}`,
+        violations: violationCount,
+        note: reason
+      });
+    }
+
+    function sendDataToGoogleSheet(payload) {
+      const syncStatus = document.getElementById("sync-status");
+
+      if (!SCRIPT_URL || SCRIPT_URL.includes("THAY_URL_GOOGLE_APPS_SCRIPT")) {
+        syncStatus.textContent = "Lưu ý: Chưa cấu hình URL Google Apps Script. Điểm đã được chấm trực tiếp trên màn hình.";
+        return;
+      }
+
+      syncStatus.textContent = "Đang lưu điểm vào hệ thống Google Sheets của giáo viên...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+        .then(() => {
+          syncStatus.style.color = "var(--success)";
+          syncStatus.textContent = "Đã ghi nhận điểm số thành công vào bảng điểm Google Sheets!";
+        })
+        .catch((err) => {
+          console.error(err);
+          syncStatus.style.color = "var(--danger)";
+          syncStatus.textContent = "Không thể kết nối máy chủ lưu điểm. Vui lòng chụp màn hình kết quả gửi giáo viên.";
+        });
+    }
+
+    // =========================================================================
+    // CƠ CHẾ CHỐNG GIAN LẬN (ANTI-CHEATING)
+    // =========================================================================
+    function showToast(msg) {
+      const toast = document.getElementById("toast-warning");
+      toast.textContent = msg;
+      toast.style.display = "block";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 4000);
+    }
+
+    function handleViolation(type) {
+      if (!isQuizActive || isSubmitted) return;
+      violationCount++;
+      document.getElementById("violation-display").textContent = `Vi phạm: ${violationCount}/${MAX_VIOLATIONS}`;
+
+      if (violationCount >= MAX_VIOLATIONS) {
+        showToast(`Bạn đã vi phạm (${type}) quá ${MAX_VIOLATIONS} lần! Hệ thống tự động thu bài.`);
+        submitQuiz(true, `Tự động thu bài do chuyển tab/thoát màn hình ${violationCount} lần`);
+      } else {
+        showToast(`Cảnh báo (${violationCount}/${MAX_VIOLATIONS}): Không được rời khỏi màn hình làm bài!`);
+      }
+    }
+
+    // Phát hiện chuyển tab hoặc thu nhỏ trình duyệt
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        handleViolation("Chuyển tab trình duyệt");
+      }
+    });
+
+    // Chặn chuột phải
+    document.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+    });
+
+    // Chặn Copy, Cut, Paste và phím tắt DevTools
+    ["copy", "cut", "paste"].forEach(evt => {
+      document.addEventListener(evt, (e) => {
+        if (isQuizActive) {
+          e.preventDefault();
+          showToast("Không được phép sao chép nội dung đề thi!");
+        }
+      });
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I", "J", "C"].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && ["C", "U", "S", "P"].includes(e.key.toUpperCase()))
+      ) {
+        if (isQuizActive) {
+          e.preventDefault();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Agent & AI Kit directories and files
+.agents/
+.agent/
+agents/
+.shared/
+rules/
+scripts/
+skills/
+tasks/
+workflows/
+ARCHITECTURE.md
+mcp_config.json
+
+# Reference screenshots
+Screenshot*.png
